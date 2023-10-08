@@ -1,5 +1,3 @@
-**Note: in order to get any points for this assignment, your submitted code should be compilable and able to run.**
-
 In this assignment, using the sample code in the `glsl_examples/` directory and the provided skeleton code in `mesh_view_phong/`, you will write a simple OpenGL-based mesh viewer. The viewer should be able to accept a list of models as command line arguments and display them next to each other by correctly scaling and translating them. Each model should be shaded with the Blinn-Phong model (as described in the textbook), with the lighting computations done in the fragment shader. Running the `mesh_view_phong` executable with the following arguments should display the models in this configuration:
 
 ```

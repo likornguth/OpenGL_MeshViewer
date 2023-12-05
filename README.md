@@ -1,30 +1,49 @@
-In this assignment, using the sample code in the `glsl_examples/` directory and the provided skeleton code in `mesh_view_phong/`, you will write a simple OpenGL-based mesh viewer. The viewer should be able to accept a list of models as command line arguments and display them next to each other by correctly scaling and translating them. Each model should be shaded with the Blinn-Phong model (as described in the textbook), with the lighting computations done in the fragment shader. Running the `mesh_view_phong` executable with the following arguments should display the models in this configuration:
-
-```
-./src/olio_mesh_view -m ../data/models/jug/jug_lg.obj -m ../data/models/bimba/bimba.off -m ../data/models/hand/hand.off
-```
-**Note: because the path to the vertex and fragment shaders are hardcoded in the executable relative to the working directory (where the executable is run), the above command should be run inside the `build/` directory.**
+# OpenGL Mesh Viewer
 
 ![olio_mesh_view](figures/olio_mesh_view.png)
 
 
-The existing code in `mesh_view_phong/` comes with a Gouraud shader, where the lighting computation is done at the vertices by the vertex shader; the fragment shader simply interpolates the vertex colors. You will need to implement new vertex and fragment shaders for Phong shading, which will result in smoother colors and better specular highlights (see class notes for details). Note: the scene contains three point lights with different positions and colors. All the loaded meshes should have the same material as the sphere in the sample code.
+## OpenGL-based Mesh Viewer Implementation
+---- 
+### Objective
+The task involves creating an OpenGL-based mesh viewer capable of displaying multiple models simultaneously, each shaded using the Blinn-Phong illumination model. User interaction functionalities, such as mouse-driven model rotation and camera movement, are also implemented. The viewer is expected to load models, apply transformations for scaling and positioning, and render them alongside interactions and appropriate lighting effects.
 
-In terms of user interaction, clicking and dragging the mouse should rotate the model(s) around the origin. Your application will need to track how much the x and y coordinates of the mouse cursor change as the mouse is being dragged in the window. The delta x will determine the amount of rotation around the y-axis (Ry), and delta y will determine the amount of rotation around the x-axis (Rx). The final model rotation will be the product of these two rotation matrices. You may need to install callbacks for mouse button and cursor position events. See the GLFW documentation about these callback functions, and how they can be installed:
-https://www.glfw.org/docs/3.3/input_guide.html#input_mouse
+---- 
 
-Pressing the `x` key on the keyboard should bring the camera closer to the model(s) by reducing the current distance of the camera to the origin by 10%. Similarly, pressing the `z` key should move the camera farther away from the model(s) by increasing the current distance of the camera to the origin by 10%. Note that since the camera is positioned on the z-axis, only the z coordinate will change in both cases. Your code should prevent the z coordinate of the camera from becoming smaller than 0.01 units.
+### Components and Implementation
+1. Model Loading and Display
 
-Pressing the spacebar should reset the rotation for the models and the camera position.
+    - The application loads models provided as command-line arguments and arranges them uniformly within a 2x2x2 cube centered at the origin.
 
-The displayed models should be scaled and translated as follows: each model should initially be (uniformly) scaled to fit in a unit cube. All the models should be arranged along the x-axis and scaled such that they all fit inside a 2x2x2 cube centered at the origin (as done in the solution executable). The camera should initially be placed at (0, 0, 2), looking at the origin along the -z direction, with an up-vector of (0, 1, 0), and a vertical field of view of 60 degrees.
+    - A new TriMesh class manages model loading (Load), bounding box calculation (GetBoundingBox), OpenGL buffer handling (DeleteGLBuffers, UpdateGLBuffers), and rendering (DrawGL).
+    Shading and Lighting
 
-It is highly recommended that you implement a new `TriMesh` class, similar to the `Sphere` class in the sample code, with these (and any other required) member functions:
+    - Implements the Blinn-Phong shading model for each model, computed within the fragment shader, resulting in smoother color transitions and improved specular highlights.
+    - Utilizes three point lights with varying positions and colors to illuminate the models, enhancing their visual appearance.
 
-```
-bool Load(...);
-void GetBoundingBox(...);
-void DeleteGLBuffers(...);
-void UpdateGLBuffers(...)'
-void DrawGL(...);
-```
+1. User Interaction
+
+    - Model Rotation: Allows users to click and drag the mouse to rotate the models around the origin. The x and y changes in mouse coordinates determine the rotation matrices applied to the models.
+    - Camera Movement: Incorporates keyboard input (x and z keys) to adjust the camera's distance from the origin along the z-axis, preventing the camera from moving too close to the models.
+    - Reset Functionality: Pressing the spacebar resets both the model rotations and the camera position.
+    Camera Setup
+
+    - Initially positions the camera at (0, 0, 2), looking at the origin along the -z direction, with an up-vector of (0, 1, 0), and a vertical field of view of 60 degrees.
+
+### Technical Implementation Notes
+1. Shader Implementation
+    - Implements new vertex and fragment shaders to facilitate the Blinn-Phong shading model for enhanced visual quality and lighting effects.
+
+1. OpenGL Rendering
+    - Utilizes OpenGL functionality to manage and display meshes, leveraging vertex buffer objects for efficient rendering.
+1. User Interaction Handling
+    - Incorporates GLFW callbacks for mouse button and cursor position events to manage model rotation.
+    - Manages keyboard input to adjust the camera's distance from the models and reset functionalities.
+
+### Result and Recommendations
+The completed assignment provides a functional OpenGL-based mesh viewer capable of loading, positioning, and shading multiple models using the Blinn-Phong illumination model. It offers interactive features for user-controlled model rotation and camera movement, ensuring a dynamic and immersive viewing experience. Recommendations for further improvements might include optimizations for rendering performance, additional shader effects, or extending the application's functionality to support more complex meshes or textures.
+
+
+
+
+
